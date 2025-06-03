@@ -1,4 +1,212 @@
-🧠 Fractal Machine Temporal Logic Map
+use std::collections::HashMap;
+
+#[derive(Debug, Clone)]
+enum Statement {
+    If {
+        condition: Condition,
+        then: Vec<Statement>,
+    },
+    Modulate {
+        target: String,
+        phase_shift: Option<f64>,
+        frequency: Option<f64>,
+    },
+    Fold {
+        target: String,
+        entropy: f64,
+    },
+    Emit {
+        signal: String,
+    },
+}
+
+#[derive(Debug, Clone)]
+struct Condition {
+    left: String,
+    op: String,
+    right: f64,
+}
+
+struct Pulse {
+    name: String,
+    interval: f64,
+    original_interval: f64,
+    next_fire: f64,
+    cycle: usize,
+    body: Vec<Statement>,
+}
+
+impl Pulse {
+    fn new(name: &str, interval: f64, body: Vec<Statement>) -> Self {
+        Pulse {
+            name: name.to_string(),
+            interval,
+            original_interval: interval,
+            next_fire: interval,
+            cycle: 0,
+            body,
+        }
+    }
+
+    fn should_fire(&self, time: f64) -> bool {
+        time >= self.next_fire
+    }
+
+    fn fire(&mut self, time: f64, state: &mut State) {
+        self.cycle += 1;
+        self.next_fire += self.interval;
+        execute_statements(&self.body, state);
+    }
+}
+
+struct State {
+    time: f64,
+    resonance: f64,
+    memory: HashMap<String, f64>,
+    signals: Vec<String>,
+    pulses: HashMap<String, Pulse>,
+}
+
+fn execute_statements(statements: &[Statement], state: &mut State) {
+    for stmt in statements {
+        match stmt {
+            Statement::If { condition, then } => {
+                if evaluate_condition(condition, state) {
+                    execute_statements(then, state);
+                }
+            }
+            Statement::Modulate { target, phase_shift, frequency } => {
+                if let Some(pulse) = state.pulses.get_mut(target) {
+                    if let Some(ps) = phase_shift {
+                        pulse.next_fire += ps * pulse.interval;
+                    }
+                    if let Some(freq) = frequency {
+                        pulse.interval = pulse.original_interval / freq;
+                    }
+                }
+            }
+            Statement::Fold { target, entropy } => {
+                println!("Folding {} with entropy {}", target, entropy);
+                // Placeholder: self-modifying behavior
+            }
+            Statement::Emit { signal } => {
+                println!("Emitting signal: {}", signal);
+                state.signals.push(signal.clone());
+            }
+        }
+    }
+}
+
+fn evaluate_condition(condition: &Condition, state: &State) -> bool {
+    let left = get_var(&condition.left, state);
+    let right = condition.right;
+    match condition.op.as_str() {
+        ">" => left > right,
+        "<" => left < right,
+        "==" => (left - right).abs() < std::f64::EPSILON,
+        _ => false,
+    }
+}
+
+fn get_var(name: &str, state: &State) -> f64 {
+    if name == "resonance" {
+        return state.resonance;
+    }
+    if name.starts_with("memory.") {
+        let key = name.split('.').nth(1).unwrap_or("");
+        return *state.memory.get(key).unwrap_or(&0.0);
+    }
+    if name.starts_with("state(\"") {
+        if let Some(pulse_name) = name.split('"').nth(1) {
+            if let Some(pulse) = state.pulses.get(pulse_name) {
+                return (pulse.cycle % 4) as f64;
+            }
+        }
+    }
+    0.0
+}
+
+// Predefined parser output
+fn get_alpha_pulse() -> Pulse {
+    let body = vec![
+        Statement::If {
+            condition: Condition {
+                left: "resonance".into(),
+                op: ">".into(),
+                right: 0.6,
+            },
+            then: vec![
+                Statement::Modulate {
+                    target: "beta".into(),
+                    phase_shift: Some(0.25),
+                    frequency: None,
+                },
+                Statement::Fold {
+                    target: "alpha".into(),
+                    entropy: 0.1,
+                },
+            ],
+        },
+    ];
+    Pulse::new("alpha", 4.0, body)
+}
+
+fn get_beta_pulse() -> Pulse {
+    let body = vec![
+        Statement::If {
+            condition: Condition {
+                left: "state(\"alpha\")".into(),
+                op: "==".into(),
+                right: 3.0,
+            },
+            then: vec![Statement::Emit {
+                signal: "sync".into(),
+            }],
+        },
+    ];
+    Pulse::new("beta", 2.0, body)
+}
+
+fn simulate(duration: f64) -> Vec<String> {
+    let mut state = State {
+        time: 0.0,
+        resonance: 0.5,
+        memory: HashMap::new(),
+        signals: vec![],
+        pulses: HashMap::new(),
+    };
+
+    state.pulses.insert("alpha".into(), get_alpha_pulse());
+    state.pulses.insert("beta".into(), get_beta_pulse());
+
+    while state.time < duration {
+        let mut firing = vec![];
+        for name in state.pulses.clone().keys() {
+            if let Some(pulse) = state.pulses.get_mut(name) {
+                if pulse.should_fire(state.time) {
+                    pulse.fire(state.time, &mut state);
+                    firing.push(name.clone());
+                }
+            }
+        }
+
+        // Update resonance
+        if firing.len() > 1 {
+            state.resonance = (state.resonance + 0.1).min(1.0);
+        } else {
+            state.resonance *= 0.99;
+        }
+
+        state.time += 1.0;
+    }
+
+    state.signals
+}
+
+fn main() {
+    let result = simulate(100.0);
+    println!("Signals emitted: {:?}", result);
+} Fractal Machine Temporal Logic Map
 plaintext
 Copy
 Edit
