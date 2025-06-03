@@ -1,0 +1,92 @@
+🧠 Fractal Machine Temporal Logic Map
+plaintext
+Copy
+Edit
++----------------------------------------+
+|         FRACTAL MACHINE ENGINE         |
++----------------------------------------+
+| Pulse Engine | Recursive Logic | DSL   |
++----------------------------------------+
+
+                   |
+                   V
+
++----------------------------------------------------------+
+|               FRACTAL DSL (Human-Readable)              |
+|----------------------------------------------------------|
+| pulse("alpha") -> every(4) {                             |
+|   if resonance > 0.6:                                    |
+|     modulate("beta", phaseShift=0.25)                   |
+|     fold("alpha", entropy=0.1)                          |
+| }                                                       |
+|----------------------------------------------------------|
+| ✅ Expressive syntax                                     |
+| ✅ Easy to author + reason about                         |
+| ✅ Compiles to structured JSON or array-based logic      |
++----------------------------------------------------------+
+
+                   |
+                   V
+
++------------------------------------------------------------+
+|          NESTED TREE / ARRAY FORM ([[[[]]]])               |
+|------------------------------------------------------------|
+| [                                                         |
+|   "pulse", "alpha", 4,                                    |
+|   [                                                       |
+|     ["if", ["resonance", ">", 0.6],                       |
+|       [                                                   |
+|         ["modulate", "beta", {"phaseShift": 0.25}],      |
+|         ["fold", "alpha", {"entropy": 0.1}]              |
+|       ]                                                   |
+|     ]                                                     |
+|   ]                                                       |
+| ]                                                         |
+|------------------------------------------------------------|
+| ✅ Execution form (compact, serializable, programmable)    |
+| ✅ Mirrors AST (Abstract Syntax Tree)                     |
+| ✅ Recursive logic, easy to walk with interpreter         |
++------------------------------------------------------------+
+
+                   |
+                   V
+
++------------------------------------------------------------+
+|          FRACTAL INTERPRETER / PULSE ENGINE               |
+|------------------------------------------------------------|
+| Executes nested arrays based on time intervals, state     |
+| memory, entropy and resonance values.                     |
+|                                                          |
+| Agents (like "alpha", "beta") each have:                 |
+| - interval (how often to tick)                           |
+| - perceptionScale (time dilation)                        |
+| - state, resonance, memory[]                             |
+| - modulate(), fold(), emit() behavior                    |
++------------------------------------------------------------+
+
+                   |
+                   V
+
++------------------------------------------------------------+
+|         MULTI-SPEED AGENTS (Relative Time Frames)         |
+|------------------------------------------------------------|
+| Agent A ("Slow") ticks every 2s, perceptionScale = 2.0     |
+| Agent B ("Fast") ticks every 0.2s, perceptionScale = 1.0   |
+|                                                            |
+| → B executes 10x faster relative to A                      |
+| → A sees B as hyper-reactive / chaotic                    |
+| → You simulate cognitive relativity                        |
++------------------------------------------------------------+
+
+                   |
+                   V
+
++------------------------------------------------------------+
+|                  APPLICATION DOMAINS                      |
+|------------------------------------------------------------|
+| 🧬 Biological Simulation: Brain rhythms vs neuron spikes   |
+| 🤖 Multi-speed AI: Reflex agents vs deliberative ones      |
+| ⛩️ Governance Logic: Slow consensus, fast alerts           |
+| 🎵 Harmonic Score Composition: Recursive signal blocks     |
+| 🌀 Echo-Memory, Entropic Chaos, Recursive Modulation       |
++------------------------------------------------------------+
